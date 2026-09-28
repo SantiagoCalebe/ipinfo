@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f4f0e8">
+    <title>IPInfo</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600;700&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #f4f0e8;
+            --cream-dark: #e9e3d8;
+            --charcoal: #20211f;
+            --charcoal-light: #2b2c2a;
+            --white: #ffffff;
+            --lavender: #b8a7ff;
+            --lavender-dark: #9f8bea;
+            --green: #426b52;
+            --muted: #77766f;
+            --border: rgba(32, 33, 31, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--cream);
+            color: var(--charcoal);
+            font-family: "Figtree", sans-serif;
+            overflow-x: hidden;
+        }
+
+        main {
+            position: relative;
+            overflow: hidden;
+        }
+
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 8vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 28px;
+            height: 2px;
+            background: var(--green);
+        }
+
+        h1,
+        h2 {
+            font-family: "EB Garamond", serif;
+            font-weight: 600;
+            letter-spacing: -0.045em;
+            line-height: 0.88;
+        }
+
+        h1 {
+            max-width: 850px;
+            font-size: clamp(72px, 11vw, 170px);
+        }
+
+        h2 {
+            font-size: clamp(62px, 9vw, 130px);
+        }
+
+        .hero-description {
+            max-width: 550px;
+            margin-top: 38px;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.65;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 42px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 0 24px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+        }
+
+        .button-primary {
+            background: var(--charcoal);
+            color: var(--white);
+        }
+
+        .button-primary:hover {
+            background: #000;
+        }
+
+        .button-secondary {
+            border: 1px solid var(--border);
+            color: var(--charcoal);
+        }
+
+        .button-secondary:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .dark-section {
+            background: var(--charcoal);
+            color: var(--white);
+        }
+
+        .ip-section {
+            min-height: 90vh;
+            padding: 130px 8vw;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-inner {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            color: var(--lavender);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        .section-description {
+            max-width: 550px;
+            margin-top: 35px;
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .ip-display {
+            margin-top: 65px;
+            padding: 32px 38px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.035);
+            overflow: hidden;
+        }
+
+        #ipAddress {
+            font-family: "EB Garamond", serif;
+            font-size: clamp(40px, 7vw, 100px);
+            line-height: 1;
+            word-break: break-word;
+            color: var(--lavender);
+        }
+
+        #ipStatus {
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 13px;
+        }
+
+        .light-section {
+            padding: 140px 8vw;
+            position: relative;
+        }
+
+        .light-section .section-inner {
+            max-width: 1400px;
+        }
+
+        .light-section .section-label {
+            color: var(--green);
+        }
+
+        .light-section .section-description {
+            color: var(--muted);
+        }
+
+        .country-card {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-top: 70px;
+            padding: 32px;
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        #countryFlag {
+            width: 78px;
+            height: 58px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: var(--cream-dark);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        #countryName {
+            font-size: 27px;
+            font-weight: 700;
+        }
+
+        #cityName {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            margin-top: 45px;
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            overflow: hidden;
+            background: var(--border);
+        }
+
+        .detail {
+            min-height: 145px;
+            padding: 28px;
+            background: var(--cream);
+        }
+
+        .detail-label {
+            margin-bottom: 14px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 17px;
+            font-weight: 600;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .network-section {
+            padding: 140px 8vw 170px;
+        }
+
+        .network-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 75px;
+        }
+
+        .network-card {
+            min-height: 190px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.035);
+            transition: transform 0.35s ease, background 0.35s ease;
+        }
+
+        .network-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .network-card .detail-label {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .network-card .detail-value {
+            color: var(--white);
+            font-size: 18px;
+        }
+
+        footer {
+            padding: 45px 8vw;
+            background: #171815;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-brand {
+            color: var(--white);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        footer a {
+            color: var(--lavender);
+            text-decoration: none;
+        }
+
+        .cat-area {
+            position: relative;
+            min-height: 520px;
+            padding: 100px 8vw;
+            background: var(--cream);
+            overflow: hidden;
+        }
+
+        .cat-decoration {
+            position: absolute;
+            right: 5%;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ascii-cat {
+            margin: 0;
+            white-space: pre;
+            font-family: monospace;
+            font-size: 10px;
+            line-height: 1;
+            color: var(--charcoal);
+            opacity: 0.9;
+        }
+
+        .cat-bubble {
+            position: absolute;
+            right: 50%;
+            bottom: calc(100% + 24px);
+            width: 320px;
+            transform: translateX(50%);
+            padding: 18px 20px;
+            border-radius: 20px;
+            background: var(--charcoal);
+            color: var(--white);
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .cat-bubble::after {
+            content: "";
+            position: absolute;
+            right: 30px;
+            bottom: -9px;
+            width: 18px;
+            height: 18px;
+            background: var(--charcoal);
+            transform: rotate(45deg);
+        }
+
+        .cat-content {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+        }
+
+        .cat-content .section-label {
+            color: var(--green);
+        }
+
+        .cat-content p {
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .loading {
+            opacity: 0.45;
+        }
+
+        @media (max-width: 1000px) {
+            .details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .network-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .ascii-cat {
+                font-size: 8px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .hero,
+            .ip-section,
+            .light-section,
+            .network-section,
+            .cat-area {
+                padding-left: 6vw;
+                padding-right: 6vw;
+            }
+
+            .hero {
+                min-height: 90vh;
+            }
+
+            h1 {
+                font-size: clamp(60px, 18vw, 100px);
+            }
+
+            h2 {
+                font-size: clamp(55px, 16vw, 85px);
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .country-card {
+                padding: 22px;
+            }
+
+            .details-grid,
+            .network-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail {
+                min-height: auto;
+            }
+
+            .cat-area {
+                min-height: 430px;
+            }
+
+            .cat-decoration {
+                right: -25px;
+                transform: scale(0.7);
+                transform-origin: bottom right;
+            }
+
+            .cat-bubble {
+                right: 20px;
+                width: 210px;
+            }
+
+            footer {
+                padding: 35px 6vw;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .ascii-cat {
+                font-size: 7px;
+            }
+
+            .cat-decoration {
+                right: -70px;
+            }
+
+            .cat-bubble {
+                right: 50px;
+                width: 190px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <div class="eyebrow">IPInfo</div>
+                <h1>Your place<br>on the network.</h1>
+                <p class="hero-description">
+                    Discover the public information your network exposes to the Internet,
+                    including your IP address, approximate location and network identity.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#ip" class="button button-primary">View my IP</a>
+                    <a href="#network" class="button button-secondary">Network identity</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="dark-section ip-section" id="ip">
+            <div class="section-inner">
+                <div class="section-label">01 — Public IP</div>
+                <h2>This is<br>your IP.</h2>
+
+                <p class="section-description">
+                    Your public IP address is the address your network presents
+                    to services across the Internet.
+                </p>
+
+                <div class="ip-display">
+                    <div id="ipAddress" class="loading">Loading...</div>
+                    <div id="ipStatus">Retrieving your network information.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="light-section">
+            <div class="section-inner">
+                <div class="section-label">02 — Location</div>
+                <h2>Where the<br>IP points.</h2>
+
+                <p class="section-description">
+                    IP geolocation provides an approximate location associated
+                    with your public IP. It does not identify your exact address.
+                </p>
+
+                <div class="country-card">
+                    <img id="countryFlag" src="" alt="Country flag">
+                    <div>
+                        <div id="countryName">Loading...</div>
+                        <div id="cityName">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail">
+                        <div class="detail-label">Country code</div>
+                        <div class="detail-value" id="countryCode">—</div>
+                    </div>
+
+                    <div class="detail">
+                        <div class="detail-label">Continent</div>
+                        <div class="detail-value" id="continent">—</div>
+                    </div>
+
+                    <div class="detail">
+                        <div class="detail-label">Region</div>
+                        <div class="detail-value" id="region">—</div>
+                    </div>
+
+                    <div class="detail">
+                        <div class="detail-label">Postal code</div>
+                        <div class="detail-value" id="postal">—</div>
+                    </div>
+
+                    <div class="detail">
+                        <div class="detail-label">Coordinates</div>
+                        <div class="detail-value" id="coordinates">—</div>
+                    </div>
+
+                    <div class="detail">
+                        <div class="detail-label">Timezone</div>
+                        <div class="detail-value" id="timezone">—</div>
+                    </div>
+
+                    <div class="detail">
+                        <div class="detail-label">UTC offset</div>
+                        <div class="detail-value" id="utcOffset">—</div>
+                    </div>
+
+                    <div class="detail">
+                        <div class="detail-label">Currency</div>
+                        <div class="detail-value" id="currency">—</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="dark-section network-section" id="network">
+            <div class="section-inner">
+                <div class="section-label">03 — Network identity</div>
+                <h2>What your<br>network says.</h2>
+
+                <p class="section-description">
+                    This section shows network-level information associated with
+                    your public IP address.
+                </p>
+
+                <div class="network-grid">
+                    <div class="network-card">
+                        <div class="detail-label">IP address</div>
+                        <div class="detail-value" id="networkIp">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">Hostname</div>
+                        <div class="detail-value" id="hostname">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">Reverse DNS</div>
+                        <div class="detail-value" id="reverseDns">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">IP version</div>
+                        <div class="detail-value" id="ipVersion">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">ISP</div>
+                        <div class="detail-value" id="isp">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">Organization</div>
+                        <div class="detail-value" id="organization">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">ASN</div>
+                        <div class="detail-value" id="asn">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">Route</div>
+                        <div class="detail-value" id="route">—</div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="detail-label">Domain</div>
+                        <div class="detail-value" id="domain">—</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cat-area">
+            <div class="cat-content">
+                <div class="section-label">04 — One more thing</div>
+                <p>
+                    This page only displays information that can be obtained
+                    from your public network connection.
+                </p>
+            </div>
+
+            <div class="cat-decoration">
+                <div class="cat-bubble">The info shown here might not tell the whole story about who you are, but that doesn't mean you're anonymous. You can still be tracked, fingerprinted, or identified through other things your browser gives away. And yeah, I mean it: NO ONE is 100% anonymous on the internet. Your browser might reveal way more than you think. Even with Tor Browser, you're not magically invisible. Stay careful, know what you're exposing, and don't assume you're completely anonymous online.</div>
+
+                <pre class="ascii-cat">⠀⠀⠀⠀⢠⡶⠚⢷⣤⡀⠀⠀⠀⠀⠀⣲⡶⠛⠻⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢠⡿⠁⠀⠀⠙⣷⣄⠀⢀⣴⡟⠁⠀⠀⢷⢹⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣾⠃⠀⠠ⶶ⠚⠛⠛⠛⠛⠋⠀⠀⣀⡀⢸⠈⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢸⣏⡔⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠚⠉⠉⣿⠀⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢾⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢠⣿⢠⣶⡆⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀
+⢒⡾⠁⠘⟟⠁⠀⠀⠀⠀⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀
+⠉⣧⠀⠀⠀⠀⠃⠀⠀⠀⠈⠉⠠⣍⠀⠀⠀⠀⠀⠀⣸⡇⢀⣤⠶⠛⠛⠻⢦⣄
+⠀⠸⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡟⣴⠟⠁⠀⠀⠀⠀⠀⢻
+⠀⠀⠀⠛⣷⡦⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⡴⠞⠋⢠⡟⠀⠀⠀⠀⠀⠀⢀⣾
+⠀⠀⠀⢰⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⣤⡀⢸⠃⠀⠀⠀⠀⢠⡶⠟⠁
+⠀⠀⠀⣸⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢷⣹⡄⠀⠀⠀⠀⣼⠀⠀⠀
+⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠈⢿⣇⠀⠀⠀⠀⢹⡄⠀⠀
+⠀⠀⠀⢸⡀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⡄⠀⠀⠀⠈⣧⠀⠀
+⠀⠀⠀⢸⡇⠘⡇⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⢹⡇⠀
+⠀⠀⠀⢸⡇⠀⠙⠀⠀⠀⠀⠀⢠⠞⠁⠀⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⠀⢸⡇⠀
+⠀⠀⠀⢸⡇⠀⢸⡆⠀⠀⠀⠀⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠀⠀⠀⠀⣸⠇⠀
+⠀⠀⠀⢸⣿⠀⠀⡇⠀⠀⠀⠀⣿⡀⠀⠀⠀⠀⠀⠀⠀⢀⡇⠀⠀⢀⣴⡟⠁⠀
+⠀⠀⠀⠘⠿⠶⢶⢧⣦⣦⡴⢾⣥⣽⣤⣤⣤⣤⣤⣤⡴⣯⡤⠴⠶⠛⠋⠀⠀⠀</pre>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-brand">IPInfo</div>
+            <div>
+                Created by
+                <a href="https://santiagocalebe.github.io" target="_blank" rel="noopener noreferrer">
+                    Santiago
+                </a>
+            </div>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        async function loadInformation() {
+            const ipAddress = document.getElementById("ipAddress");
+            const ipStatus = document.getElementById("ipStatus");
+
+            try {
+                const response = await fetch("https://ipwho.is/");
+
+                if (!response.ok) {
+                    throw new Error("Request failed");
+                }
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error("API request failed");
+                }
+
+                const location = data.location || {};
+                const connection = data.connection || {};
+
+                const ip = data.ip || "Unavailable";
+                const country = data.country || "Unknown";
+                const city = data.city || "Unknown";
+                const countryCode = data.country_code || "—";
+                const continent = data.continent || "—";
+                const region = data.region || "—";
+                const postal = data.postal || "—";
+                const latitude = data.latitude;
+                const longitude = data.longitude;
+                const timezone = location.timezone || {};
+                const currency = data.currency || {};
+                const hostname = data.hostname || connection.domain || "—";
+
+                ipAddress.textContent = ip;
+                ipAddress.classList.remove("loading");
+                ipStatus.textContent = "Public IP detected successfully.";
+
+                document.getElementById("countryName").textContent = country;
+                document.getElementById("cityName").textContent = city;
+
+                const flag = document.getElementById("countryFlag");
+
+                if (data.flag && data.flag.img) {
+                    flag.src = data.flag.img;
+                } else {
+                    flag.style.display = "none";
+                }
+
+                document.getElementById("countryCode").textContent = countryCode;
+                document.getElementById("continent").textContent = continent;
+                document.getElementById("region").textContent = region;
+                document.getElementById("postal").textContent = postal;
+
+                if (latitude !== undefined && longitude !== undefined) {
+                    document.getElementById("coordinates").textContent =
+                        `${latitude}, ${longitude}`;
+                }
+
+                document.getElementById("timezone").textContent =
+                    timezone.id || "—";
+
+                document.getElementById("utcOffset").textContent =
+                    timezone.utc || "—";
+
+                document.getElementById("currency").textContent =
+                    currency.name
+                        ? `${currency.name} (${currency.code || "—"})`
+                        : "—";
+
+                document.getElementById("networkIp").textContent = ip;
+                document.getElementById("hostname").textContent = hostname;
+                document.getElementById("reverseDns").textContent =
+                    data.reverse || hostname || "—";
+
+                document.getElementById("ipVersion").textContent =
+                    ip.includes(":") ? "IPv6" : "IPv4";
+
+                document.getElementById("isp").textContent =
+                    connection.isp || "—";
+
+                document.getElementById("organization").textContent =
+                    connection.org || "—";
+
+                document.getElementById("asn").textContent =
+                    connection.asn ? `AS${connection.asn}` : "—";
+
+                document.getElementById("route").textContent =
+                    connection.route || "—";
+
+                document.getElementById("domain").textContent =
+                    connection.domain || "—";
+
+            } catch (error) {
+                ipAddress.textContent = "Unavailable";
+                ipAddress.classList.remove("loading");
+                ipStatus.textContent =
+                    "Could not retrieve network information.";
+
+                document.getElementById("countryName").textContent = "Unavailable";
+                document.getElementById("cityName").textContent = "Unavailable";
+            }
+        }
+
+        function createAnimations() {
+            gsap.from(".hero-content > *", {
+                opacity: 0,
+                y: 40,
+                duration: 1,
+                stagger: 0.12,
+                ease: "power3.out"
+            });
+
+            gsap.utils.toArray(".dark-section, .light-section, .cat-area").forEach(section => {
+                const elements = section.querySelectorAll(
+                    ".section-label, h2, .section-description, .ip-display, .country-card, .details-grid, .cat-content, .cat-decoration"
+                );
+
+                if (!elements.length) return;
+
+                gsap.from(elements, {
+                    opacity: 0,
+                    y: 45,
+                    duration: 0.9,
+                    stagger: 0.08,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play reverse play reverse"
+                    }
+                });
+            });
+
+            gsap.from(".network-card", {
+                opacity: 0,
+                y: 35,
+                duration: 0.7,
+                stagger: 0.08,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: ".network-grid",
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    toggleActions: "play reverse play reverse"
+                }
+            });
+
+            gsap.from(".ascii-cat", {
+                x: 100,
+                opacity: 0,
+                duration: 1.2,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: ".cat-area",
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    toggleActions: "play reverse play reverse"
+                }
+            });
+
+            gsap.from(".cat-bubble", {
+                scale: 0.7,
+                opacity: 0,
+                duration: 0.7,
+                delay: 0.25,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                    trigger: ".cat-area",
+                    start: "top 75%",
+                    end: "bottom 20%",
+                    toggleActions: "play reverse play reverse"
+                }
+            });
+        }
+
+        loadInformation();
+        createAnimations();
+    </script>
+</body>
+</html>
